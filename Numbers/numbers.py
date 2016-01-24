@@ -61,7 +61,7 @@ def getExtractNumbers(url) :
     date = soup.find('input', {'id': 'datepicker'}).get('value')
     todate = time.strftime("%d/%m/%Y")
 
-    if date == todate :
+    if date != todate :
         return None
     else :
         # Estrae i 20 numeri
@@ -217,7 +217,8 @@ def main() :
         addNewMail(args.mail)
         sys.exit(1)
 
-    extractNewNumbersFromMail(json['mailFrom'])
+
+    if args.numbers : extractNewNumbersFromMail(json['mailFrom'])
 
     extractNums = getExtractNumbers(json['url'])
     if extractNums == None :
