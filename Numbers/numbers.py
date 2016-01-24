@@ -184,6 +184,38 @@ def addNewMail(new_mail) :
 
 
 #
+## Send result via mail
+def send_mail(my_nums, extr_nums, nums, jolly, mail, debug) :
+
+    # Create message
+    if debug : print "Sending result via mail"
+
+    # Costruzione body della mail
+    mess = "Numeri giocati: " + str(my_nums) + "\n" +\
+           "Numeri estratti: " + str(extr_nums) + "\n\n" +\
+           "Numeri indovinati: " + str(nums) + "\nJolly: " + str(jolly)
+
+    message = MIMEText(mess)
+    message['To'] = email.utils.formataddr(('Recipient', mail))
+    message['From'] = email.utils.formataddr(('Author', 'number@gmail.com'))
+    message['Subject'] = "[10 e lotto results]"
+
+    try :
+        server = smtplib.SMTP('127.0.0.1')
+    except smtplib.SMTPConnectError, err :
+        print "[!] Error SMTP connection: " + err
+
+    if debug : server.set_debuglevel(True) # show communication with the server
+
+    try:
+        server.sendmail('number@gmail.com', [mail], message.as_string())
+    finally:
+        server.quit()
+##
+
+
+
+#
 ## MAIN
 def main() :
 
