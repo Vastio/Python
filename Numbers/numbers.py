@@ -12,6 +12,8 @@
 
 import sys, os, time
 import json, urllib2, re
+import smtplib, imaplib, email.utils
+from email.mime.text import MIMEText
 from bs4 import BeautifulSoup
 
 configFile = "./config.json"
@@ -48,7 +50,7 @@ def getExtractNumbers(url) :
     date = soup.find('input', {'id': 'datepicker'}).get('value')
     todate = time.strftime("%d/%m/%Y")
 
-    if date != todate :
+    if date == todate :
         return None
     else :
         # Estrae i 20 numeri
@@ -79,6 +81,63 @@ def compareNumbers(extractNums, playedNums) :
 
     return (numbers, goldNum)
 ###
+
+
+
+#
+## Estrae i nuovi numeri giocati
+## e li salva nel file di configurazione
+def extractNewNumbersFromMail(mailFrom, debug) :
+
+    new_numbers= []
+
+    # server setting
+    try :
+        imap = imaplib.IMAP4_SSL(mailFrom['server'], 993)
+        imap.login(mailFrom['username'], mailFrom['password'])
+
+        # Select INBOX e setting readonly
+        imap.select('INBOX')
+
+        typ, msg_id = imap.search(None, '(SUBJECT "[New Numbers]")')
+
+        if debug : print typ, msg_id
+
+        if len(msg_id[0]) != 0 :
+            part, msg_data = imap.fetch(msg_id[0], '(BODY.PEEK[TEXT])')
+
+            # Sign the message to be deleted
+            imap.store(msg_id[0], '+FLAGS', '\\Deleted')
+
+            for response_part in msg_data:
+                if isinstance(response_part, tuple):
+
+                    # Estrae i numeri dalla stringa
+                    for num in response_part[1].split(',') :
+                        new_numbers.append(int(num))
+
+                    if debug : print "New numbers: ", new_numbers
+            # Really delete the message.
+            typ, response = imap.expunge()
+            if debug : print typ, 'Message deleted: ', response
+        else :
+            if debug : print "No new numbers found in mailbox"
+    except imaplib.IMAP4.error, err :
+        print "Imap error: " + str(err)
+
+    imap.logout()
+
+    # Append numbers in config.json file
+    if new_numbers :
+        dict_num = {'numbers' : new_numbers}
+        with open('config.json') as f:
+            data = json.load(f)
+
+        data.update(dict_num)
+
+        with open('config.json', 'w') as f:
+            json.dump(data, f)
+##
 
 
 
