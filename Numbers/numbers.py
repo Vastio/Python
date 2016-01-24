@@ -98,7 +98,7 @@ def compareNumbers(extractNums, playedNums) :
 #
 ## Estrae i nuovi numeri giocati
 ## e li salva nel file di configurazione
-def extractNewNumbersFromMail(mailFrom, debug) :
+def extractNewNumbersFromMail(mailFrom) :
 
     new_numbers= []
 
@@ -111,8 +111,6 @@ def extractNewNumbersFromMail(mailFrom, debug) :
         imap.select('INBOX')
 
         typ, msg_id = imap.search(None, '(SUBJECT "[New Numbers]")')
-
-        if debug : print typ, msg_id
 
         if len(msg_id[0]) != 0 :
             part, msg_data = imap.fetch(msg_id[0], '(BODY.PEEK[TEXT])')
@@ -127,12 +125,8 @@ def extractNewNumbersFromMail(mailFrom, debug) :
                     for num in response_part[1].split(',') :
                         new_numbers.append(int(num))
 
-                    if debug : print "New numbers: ", new_numbers
             # Really delete the message.
             typ, response = imap.expunge()
-            if debug : print typ, 'Message deleted: ', response
-        else :
-            if debug : print "No new numbers found in mailbox"
     except imaplib.IMAP4.error, err :
         print "Imap error: " + str(err)
 
@@ -178,22 +172,13 @@ def addNewMail(new_mail) :
     except ValueError, err :
 		print "[!] Error in json file: %s" % err
 		exit(1)
-
 ##
 
 
 
 #
 ## Send result via mail
-def send_mail(my_nums, extr_nums, nums, jolly, mail, debug) :
-
-    # Create message
-    if debug : print "Sending result via mail"
-
-    # Costruzione body della mail
-    mess = "Numeri giocati: " + str(my_nums) + "\n" +\
-           "Numeri estratti: " + str(extr_nums) + "\n\n" +\
-           "Numeri indovinati: " + str(nums) + "\nJolly: " + str(jolly)
+def send_mail(mess, mail) :
 
     message = MIMEText(mess)
     message['To'] = email.utils.formataddr(('Recipient', mail))
@@ -204,8 +189,6 @@ def send_mail(my_nums, extr_nums, nums, jolly, mail, debug) :
         server = smtplib.SMTP('127.0.0.1')
     except smtplib.SMTPConnectError, err :
         print "[!] Error SMTP connection: " + err
-
-    if debug : server.set_debuglevel(True) # show communication with the server
 
     try:
         server.sendmail('number@gmail.com', [mail], message.as_string())
@@ -221,7 +204,9 @@ def main() :
 
      # Command line arguments
     parser = argparse.ArgumentParser(description="Compare numbers")
+    parser.add_argument('-N', '--numbers', action="store_true", help="extract new numbers from mail and exit.")
     parser.add_argument('-m', '--mail', help="add new mailTo to config file and exit.")
+    parser.add_argument('-S', '--sendmail', action="store_true", help="send result via mail (specified in config mail).")
     parser.add_argument('--version', action='version', version=__version__)
     args = parser.parse_args()
 
@@ -231,6 +216,8 @@ def main() :
     if args.mail :
         addNewMail(args.mail)
         sys.exit(1)
+
+    extractNewNumbersFromMail(json['mailFrom'])
 
     extractNums = getExtractNumbers(json['url'])
     if extractNums == None :
@@ -246,8 +233,13 @@ def main() :
     message += "===========================================\n"
     message += "<*> Numeri individuati: " + str(numbers) + "\n";
     message += "<*> Numero oro: " + str(goldNum) + "\n";
+    message += "===========================================\n"
 
-    print message
+    if args.sendmail :
+        for mail in json['mailTo'] :
+            send_mail(message, mail)
+    else :
+        print message
 ###
 
 
