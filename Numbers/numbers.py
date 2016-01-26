@@ -217,8 +217,9 @@ def main() :
         addNewMail(args.mail)
         sys.exit(1)
 
-
-    if args.numbers : extractNewNumbersFromMail(json['mailFrom'])
+    if args.numbers :
+        extractNewNumbersFromMail(json['mailFrom'])
+        json = loadJson() # Ricarica i dati dal file di config
 
     extractNums = getExtractNumbers(json['url'])
     if extractNums == None :
