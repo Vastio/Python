@@ -16,24 +16,32 @@ def loginOK(ip) :
 #####
 
 
-try :
-	filename = sys.argv[1]
-except IndexError :
-	print "\n Usage:  " + sys.argv[0] + " masscan_file\n"
-	sys.exit(1)
+#####
+##### MAIN
+def main() :
+	try :
+		filename = sys.argv[1]
+	except IndexError :
+		print "\n Usage:  " + sys.argv[0] + " masscan_file\n"
+		sys.exit(1)
 
-ip_list = []
+	ip_list = []
 
-try :
-	fh = open(filename, 'r')
+	try :
+		fh = open(filename, 'r')
 	
-	for line in fh :
-		ip = line[12:-11]
-		ip_list.append(ip)	
-	fh.close()
-except IOError :
-	print "IO error to open " + filename
-	sys.exit(1)
+		for line in fh :
+			ip = line[12:-11]
+			ip_list.append(ip)	
+		fh.close()
+	except IOError :
+		print "IO error to open " + filename
+		sys.exit(1)
 
-for ip in ip_list :
-	if loginOK(ip) : print "[***] Anonymous login OK: %s [***]" % ip
+	for ip in ip_list :
+		if loginOK(ip) : print "[***] Anonymous login OK: %s [***]" % ip
+
+
+###########
+if __name__ == '__main__':
+    main()
