@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys
+import time
 from ftplib import FTP
 
 
@@ -38,9 +39,16 @@ def main() :
 		print "IO error to open " + filename
 		sys.exit(1)
 
+	start_time = time.time()
 	for ip in ip_list :
-		if loginOK(ip) : print "[***] Anonymous login OK: %s [***]" % ip
-
+		sys.stdout.write("\r Scanning %s" % ip)
+		if loginOK(ip) : 
+			print "[***] Anonymous login OK: %s [***]" % ip
+		else : 
+			sys.stdout.flush()
+			time.sleep(0.2)
+		
+	print "\n Scanned %d hosts in %d seconds" % (len(ip_list), (time.time() - start_time))
 
 ###########
 if __name__ == '__main__':
