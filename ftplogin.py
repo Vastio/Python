@@ -40,16 +40,20 @@ def main() :
 		sys.exit(1)
 
 	start_time = time.time()
+	i = 1
 	for ip in ip_list :
-		sys.stdout.write("\r Scanning %s" % ip)
+		sys.stdout.write("\r [*] Scanning %d of %d -> %s" % (i, len(ip_list), ip))
 		if loginOK(ip) : 
-			print "[***] Anonymous login OK: %s [***]" % ip
-		else : 
-			sys.stdout.flush()
-			time.sleep(0.2)
+			#print "\n\n[***] Anonymous login OK: %s [***]\n" % ip
+			sys.stdout.write("\r [***] Anonymous login OK: %s [***]\n" % ip) 	
+		sys.stdout.flush()
+		time.sleep(0.2)
+		i += 1
 		
 	print "\n Scanned %d hosts in %d seconds" % (len(ip_list), (time.time() - start_time))
 
 ###########
 if __name__ == '__main__':
     main()
+
+
