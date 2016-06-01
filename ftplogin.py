@@ -7,8 +7,11 @@ from ftplib import FTP
 
 ####
 def loginOK(ip) :
+
+	ftp = FTP()
+			
 	try :
-		ftp = FTP(ip, timeout=20)
+		ftp.connect(ip, timeout=15)
 		ftp.login()
 	except Exception :
 		ftp.close()
@@ -17,6 +20,7 @@ def loginOK(ip) :
 	ftp.close()
 	return True
 #####
+
 
 
 #####
