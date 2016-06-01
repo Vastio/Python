@@ -8,11 +8,13 @@ from ftplib import FTP
 ####
 def loginOK(ip) :
 	try :
-		ftp = FTP(ip)
+		ftp = FTP(ip, timeout=20)
 		ftp.login()
 	except Exception :
+		ftp.close()
 		return False
-
+	
+	ftp.close()
 	return True
 #####
 
@@ -42,7 +44,7 @@ def main() :
 	start_time = time.time()
 	i = 1
 	for ip in ip_list :
-		sys.stdout.write("\r [*] Scanning %d of %d -> %s" % (i, len(ip_list), ip))
+		sys.stdout.write("\r => Scanning %d of %d -> %s" % (i, len(ip_list), ip))
 		if loginOK(ip) : 
 			#print "\n\n[***] Anonymous login OK: %s [***]\n" % ip
 			sys.stdout.write("\r [***] Anonymous login OK: %s [***]\n" % ip) 	
@@ -50,7 +52,7 @@ def main() :
 		time.sleep(0.2)
 		i += 1
 		
-	print "\n Scanned %d hosts in %d seconds" % (len(ip_list), (time.time() - start_time))
+	print "\n\n Scanned %d hosts in %d seconds" % (len(ip_list), (time.time() - start_time))
 
 ###########
 if __name__ == '__main__':
