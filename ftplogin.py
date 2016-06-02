@@ -1,8 +1,18 @@
 #!/usr/bin/env python
 
-import sys
+import sys, signal
 import time
 from ftplib import FTP
+
+
+
+###
+def sig_handler(signum, frame) :
+
+	print("\nCaught Ctrl/C signal!")
+	print("Bye bye ...")
+#####
+
 
 
 ####
@@ -26,6 +36,9 @@ def loginOK(ip) :
 #####
 ##### MAIN
 def main() :
+
+	signal.signal(signal.SIGINT, sig_handler)
+
 	try :
 		filename = sys.argv[1]
 	except IndexError :
