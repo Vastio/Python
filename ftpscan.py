@@ -9,6 +9,7 @@ import sys
 import signal
 import argparse
 import ipaddress
+from termcolor import colored
 
 
 # Signal handler
@@ -36,6 +37,9 @@ def main():
     parser.add_argument("-p", "--port", help="Set non standard port.")
     parser.add_argument('--version', action='version', version=__version__)
     args = parser.parse_args()
+
+    text = colored("<*> Program starting...", 'green')
+    print(text)
 
     net4 = ipaddress.ip_network(args.ip_range)
     for x in net4.hosts():
