@@ -8,6 +8,7 @@
 import sys
 import signal
 import argparse
+import ipaddress
 
 
 # Signal handler
@@ -30,12 +31,15 @@ def main():
     # Argument parser
     parser = argparse.ArgumentParser(description="A service bot!",
                                      usage="%(prog)s [options] ip-range",
-                                     epilog="Happy scan!")
-    parser.add_argument("ip-range", metavar='IP', help="ip range.")
+                                     epilog="<*> Happy scan! <*>\n")
+    parser.add_argument("ip_range", metavar='IP', help="ip range.")
     parser.add_argument("-p", "--port", help="Set non standard port.")
     parser.add_argument('--version', action='version', version=__version__)
     args = parser.parse_args()
 
+    net4 = ipaddress.ip_network(args.ip_range)
+    for x in net4.hosts():
+        print(x)
 ###
 
 
