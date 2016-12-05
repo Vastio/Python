@@ -111,7 +111,8 @@ def createDB(db):
         num17    INT NOT NULL,
         num18    INT NOT NULL,
         num19    INT NOT NULL,
-        num20    INT NOT NULL
+        num20    INT NOT NULL,
+        gold     INT NOT NULL
         );
     """
 
@@ -131,11 +132,18 @@ def insertNumsDB(numbers, db):
 
     # query
     query = """
-    INSERT INTO nums (data,num1,num2,num3,num4,num5,num6,num7,num8,num9,num10,num11,num12,num13,num14,num15,num16,num17,num18,num19,num20)
-    VALUES (date('now'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);
+    INSERT INTO nums (data,num1,num2,num3,num4,num5,num6,num7,num8,num9,num10,num11,num12,num13,num14,num15,num16,num17,num18,num19,num20,gold)
+    VALUES (date('now'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);
     """
-
-    
+    # Exec query
+    try:
+        db_conn = sqlite3.connect(db)
+        db_cur = db_conn.cursor()
+        db_cur.execute(query, numbers)
+        db_conn.commit()
+        db_conn.close()
+    except sqlite3.Error as sql_err:
+        print "Error in INSERT query: %s" % (sql_err)
 ###
 
 
@@ -162,6 +170,7 @@ def main():
         message += "=======================================\n"
 
         sendMessage(json['bot_token'], json['seba_id'], message)
+        insertNumsDB(extractNums, json['database'])
 #####
 if __name__ == '__main__':
     main()
