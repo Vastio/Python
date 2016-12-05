@@ -2,6 +2,7 @@ import sys
 import os
 import time
 import json
+import sqlite3
 import urllib2
 from bs4 import BeautifulSoup
 import telepot
@@ -83,12 +84,71 @@ def sendMessage(bot_token, usr_id, message):
 ###
 
 
+# create db
+def createDB(db):
+
+    # QUERY
+    query = """
+        CREATE TABLE IF NOT EXISTS nums(
+        id  INTEGER PRIMARY KEY AUTOINCREMENT,
+        data    TIMESTAMP   NOT NULL,
+        num1    INT NOT NULL,
+        num2    INT NOT NULL,
+        num3    INT NOT NULL,
+        num4    INT NOT NULL,
+        num5    INT NOT NULL,
+        num6    INT NOT NULL,
+        num7    INT NOT NULL,
+        num8    INT NOT NULL,
+        num9    INT NOT NULL,
+        num10    INT NOT NULL,
+        num11    INT NOT NULL,
+        num12    INT NOT NULL,
+        num13    INT NOT NULL,
+        num14    INT NOT NULL,
+        num15    INT NOT NULL,
+        num16    INT NOT NULL,
+        num17    INT NOT NULL,
+        num18    INT NOT NULL,
+        num19    INT NOT NULL,
+        num20    INT NOT NULL
+        );
+    """
+
+    try:
+        db_conn = sqlite3.connect(db)
+        db_cur = db_conn.cursor()
+        db_cur.execute(query)
+        db_conn.commit()
+        db_conn.close()
+    except sqlite3.Error as sql_err:
+            print "Error exec query: %s" % (sql_err)
+###
+
+
+# insert nums in db
+def insertNumsDB(numbers, db):
+
+    # query
+    query = """
+    INSERT INTO nums (data,num1,num2,num3,num4,num5,num6,num7,num8,num9,num10,num11,num12,num13,num14,num15,num16,num17,num18,num19,num20)
+    VALUES (date('now'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);
+    """
+
+    
+###
+
+
 # main
 def main():
     json = loadJson()
 
     extractNums = getExtractNumbers(json['url'])
     playedNums = json['numbers']
+
+    # Create db if not exists
+    if not os.path.isfile(json['database']):
+        createDB(json['database'])
 
     if extractNums is not None:
         (numbers, goldNum) = compareNumbers(extractNums, playedNums)
