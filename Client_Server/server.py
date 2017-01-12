@@ -29,15 +29,13 @@ def main():
     (conn, s_addr) = sock.accept() # Accetta la connessione da un cient
 
     print "[*] Connession da %s %s\n" % (s_addr[0], s_addr[1])
-    conn.sendall("[*] Welcome [%s]\n" % s_addr[0])
-    conn.sendall("[I] Type quit to close connection\n")
 
     while True:
         msg = conn.recv(max_buffer)
 
-        if msg[0:-1] == "Hello" or msg[0:-1] == "hello":
+        if msg.rstrip('\n') == "Hello" or msg.rstrip('\n') == "hello":
             conn.sendall("[I] Hello World!!\n")
-        elif msg[0:-1] == "quit":
+        elif msg.rstrip('\n') == "quit":
             conn.sendall("[I] Bye bye!\n")
             break
         else:
