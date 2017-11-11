@@ -10,6 +10,7 @@
 # -------------------------------------------------------------------------------
 
 import sys
+import os
 import subprocess
 import re
 
@@ -18,7 +19,7 @@ import re
 #########
 srcMediaFolder = "/mnt/share"
 (dstFilmFolder, dstTvSerieFolder) = ("./Film", "./TvSeries")
-fileExt = ("avi", "mkv", "mp4")
+fileExt = (".avi", ".mkv", ".mp4")
 matchlist = ("\dx\d", "s\dx\d", "s0\dx\d", "\de\d", "s\de\d", "s0\de\d")
 
 
@@ -35,6 +36,8 @@ def mountRemoteFolder():
     except OSError as err:
         sys.stderr.write(" [!] Unable  to mount remote folder: %s\n" % err)
         return 0
+
+    return 1
 ###
 
 
@@ -54,10 +57,23 @@ def umountRemoteFolder():
 # Listing source dir
 def listSrcFolder(src_path):
 
+    file_list = []
+
     for f_name in os.listdir(src_path):
-        path_name = os.path.join(src_path, f_name)
-        if os.path.is_file(path_name):
-            if
+
+        # Join della dir con il file_name
+        full_path = os.path.join(src_path, f_name)
+
+        # Verifica se file
+        if os.path.isfile(full_path):
+            # Verfica estensione del file
+            if os.path.splitext(full_path)[1] in fileExt:
+                file_list.append(full_path)
+        # Recursiva se directory
+        if os.path.isdir(full_path):
+            file_list = listSrcFolder(full_path)
+
+    return file_list
 ###
 
 
@@ -68,7 +84,9 @@ def main():
         sys.exit(1)
 
     # Listing source folder
-    files = listSrcFolder(srcMediaFolder)
+    file_list = listSrcFolder(srcMediaFolder)
+
+    umountRemoteFolder()
 ###########
 
 
