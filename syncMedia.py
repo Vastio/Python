@@ -9,6 +9,8 @@
 # Licence:     <GPLv3>
 # -------------------------------------------------------------------------------
 
+import sys
+import subprocess
 
 #########
 # VARS  #
@@ -19,9 +21,30 @@ fileExt = ("avi", "mkv", "mp4")
 matchlist = ("\dx\d", "s\dx\d", "s0\dx\d", "\de\d", "s\de\d", "s0\de\d")
 
 
+# Mount remote folder
+def mountRemoteFolder():
+    srcFolder = "//192.168.0.100/p2p"
+    dstFolder = "/mnt/share"
+    opts = "username=p2p,password=Claeseby@197,vers=3.0"
+
+    try:
+        subprocess.check_call(['mount.cifs', srcFolder, dstFolder, '-o', opts])
+    except subprocess.CalledProcessError as err:
+        sys.stderr.write(" [!] Unable  to mount remote folder: %s!\n" % err)
+        return 0
+    except OSError as err:
+        sys.stderr.write(" [!] Unable  to mount remote folder: %s\n" % err)
+        return 0
+###
+
+
 # MAIN
 def main():
-    print("[*] Starting...")
+
+    if not mountRemoteFolder():
+        sys.exit(1)
+
+    # Listing source folder
 ###########
 
 
