@@ -11,14 +11,17 @@
 
 import sys
 import os
+import time
 import subprocess
 import re
+import shutil
 
 #########
 # VARS  #
 #########
 srcMediaFolder = "/mnt/share"
-(dstFilmFolder, dstTvSerieFolder) = ("./Film", "./TvSeries")
+dstFilmFolder = "/mnt/media/video/Films/"
+dstTvSerieFolder = "/mnt/media/video/TvSeries"
 fileExt = (".avi", ".mkv", ".mp4")
 matchlist = ("\dx\d", "s\dx\d", "s0\dx\d", "\de\d", "s\de\d", "s0\de\d")
 
@@ -54,26 +57,65 @@ def umountRemoteFolder():
 ###
 
 
+# Verifica sel il file is una serie tv
+def isTvSerie(file):
+
+    for match in matchlist:
+        regex = re.compile(match, re.IGNORECASE)
+        if regex.search(file):
+            return True
+
+    return False
+###
+
+
+# Sposte il film nella directory destinazione
+def handleFilm(src_file, file_name):
+
+    # File destinazione
+    dst_file = os.path.join(dstFilmFolder, file_name)
+
+    if os.path.exists(dst_file):
+        now = time.time() - (6 * 86400)
+
+        if os.stat(src_file).st_ctime < now:
+            print("Remove file: " + src_file)
+            # os.remove(src_file)
+    else:
+        try:
+            print(src_file + " -> " + dst_file)
+            shutil.copyfile(src_file, dst_file)
+        except IOError as err:
+            sys.stderr.write(" [!] IOError: %s\n" % err)
+            sys.exit(1)
+###
+
+
 # Listing source dir
 def listSrcFolder(src_path):
 
-    file_list = []
+    serie_list = []
 
     for f_name in os.listdir(src_path):
 
-        # Join della dir con il file_name
-        full_path = os.path.join(src_path, f_name)
+        if f_name != '#recycle':
+            # Join della dir con il file_name
+            full_path = os.path.join(src_path, f_name)
 
-        # Verifica se file
-        if os.path.isfile(full_path):
-            # Verfica estensione del file
-            if os.path.splitext(full_path)[1] in fileExt:
-                file_list.append(full_path)
-        # Recursiva se directory
-        if os.path.isdir(full_path):
-            file_list = listSrcFolder(full_path)
+            # Verifica se file
+            if os.path.isfile(full_path):
+                # Verfica estensione del file
+                if os.path.splitext(full_path)[1] in fileExt:
+                    if isTvSerie(f_name):
+                        serie_list.append(full_path)
+                    else:
+                        handleFilm(full_path, f_name)
+            # Recursiva se directory
+            if os.path.isdir(full_path):
+                ret_list = listSrcFolder(full_path)
+                serie_list.extend(ret_list)
 
-    return file_list
+    return serie_list
 ###
 
 
