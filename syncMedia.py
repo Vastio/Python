@@ -81,11 +81,13 @@ def handleFilm(src_file, file_name):
         now = time.time() - (6 * 86400)
 
         if os.stat(src_file).st_ctime < now:
-            print("Remove file: " + src_file)
+            if DEBUG:
+                print("Remove file: " + src_file)
             # os.remove(src_file)
     else:
         try:
-            print(src_file + " -> " + dst_file)
+            if DEBUG:
+                print(src_file + " -> " + dst_file)
             shutil.copyfile(src_file, dst_file)
         except IOError as err:
             sys.stderr.write(" [!] IOError: %s\n" % err)
@@ -109,8 +111,12 @@ def listSrcFolder(src_path):
                 # Verfica estensione del file
                 if os.path.splitext(full_path)[1] in fileExt:
                     if isTvSerie(f_name):
+                        if DEBUG:
+                            print("[*] TvSerie -> " + f_name)
                         serie_list.append(full_path)
                     else:
+                        if DEBUG:
+                            print("[*] Film -> " + f_name)
                         handleFilm(full_path, f_name)
             # Recursiva se directory
             if os.path.isdir(full_path):
@@ -140,10 +146,13 @@ def main():
         DEBUG = True
 
     if DEBUG:
-        print("[*] Program startin...")
+        print("[*] Program starting...")
 
     if not mountRemoteFolder():
         sys.exit(1)
+
+    if DEBUG:
+        print("[*] Mounted smb source folder.")
 
     # Listing source folder
     file_list = listSrcFolder(srcMediaFolder)
