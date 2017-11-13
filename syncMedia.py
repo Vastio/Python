@@ -12,6 +12,7 @@
 import sys
 import os
 import time
+import argparse
 import subprocess
 import re
 import shutil
@@ -24,6 +25,7 @@ dstFilmFolder = "/mnt/media/video/Films/"
 dstTvSerieFolder = "/mnt/media/video/TvSeries"
 fileExt = (".avi", ".mkv", ".mp4")
 matchlist = ("\dx\d", "s\dx\d", "s0\dx\d", "\de\d", "s\de\d", "s0\de\d")
+DEBUG = False
 
 
 # Mount remote folder
@@ -121,6 +123,24 @@ def listSrcFolder(src_path):
 
 # MAIN
 def main():
+
+    parser = argparse.ArgumentParser(prog="syncMedia",
+                                     description="Sync media in folder.")
+
+    parser.add_argument('-d', '--debug',
+                        action='store_true',
+                        help="set debug ON.")
+
+    parser.add_argument('--version', action='version', version='%(prog)s 2.0')
+
+    args = parser.parse_args()
+
+    # Set debug ON
+    if args.debug:
+        DEBUG = True
+
+    if DEBUG:
+        print("[*] Program startin...")
 
     if not mountRemoteFolder():
         sys.exit(1)
