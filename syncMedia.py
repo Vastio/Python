@@ -98,7 +98,7 @@ def handleFilm(src_file, file_name):
 # Listing source dir
 def listSrcFolder(src_path):
 
-    serie_list = []
+    serie_list = {}
 
     for f_name in os.listdir(src_path):
 
@@ -113,7 +113,7 @@ def listSrcFolder(src_path):
                     if isTvSerie(f_name):
                         if DEBUG:
                             print("[*] TvSerie -> " + f_name)
-                        serie_list.append(full_path)
+                        serie_list[f_name] = full_path
                     else:
                         if DEBUG:
                             print("[*] Film -> " + f_name)
@@ -121,9 +121,17 @@ def listSrcFolder(src_path):
             # Recursiva se directory
             if os.path.isdir(full_path):
                 ret_list = listSrcFolder(full_path)
-                serie_list.extend(ret_list)
+                serie_list.update(ret_list)
 
     return serie_list
+###
+
+
+# Handle TvSeries
+def handleTvSeries(file_list):
+
+    for f_name in file_list:
+        print(file_list[f_name])
 ###
 
 
@@ -143,6 +151,7 @@ def main():
 
     # Set debug ON
     if args.debug:
+        global DEBUG
         DEBUG = True
 
     if DEBUG:
@@ -156,6 +165,8 @@ def main():
 
     # Listing source folder
     file_list = listSrcFolder(srcMediaFolder)
+
+    handleTvSeries(file_list)
 
     umountRemoteFolder()
 ###########
