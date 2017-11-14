@@ -131,7 +131,21 @@ def listSrcFolder(src_path):
 def handleTvSeries(file_list):
 
     for f_name in file_list:
-        print(file_list[f_name])
+        title = ''
+        season = None
+        split_name = f_name.split('.')
+        for str_name in split_name:
+            for match in matchlist:
+                regex = re.compile(match, re.IGNORECASE)
+                if regex.match(str_name):
+                    season = str_name
+                    break
+                else:
+                    title += str_name + " "
+                    break
+            if season is not None:
+                break
+        print(title + " " + season)
 ###
 
 
@@ -165,7 +179,6 @@ def main():
 
     # Listing source folder
     file_list = listSrcFolder(srcMediaFolder)
-
     handleTvSeries(file_list)
 
     umountRemoteFolder()
