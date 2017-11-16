@@ -24,8 +24,9 @@ srcMediaFolder = "/mnt/share"
 dstFilmFolder = "/mnt/media/video/Films/"
 dstTvSerieFolder = "/mnt/media/video/TvSeries"
 fileExt = (".avi", ".mkv", ".mp4")
-matchlist = ("\dx\d", "s\dx\d", "s0\dx\d", "\de\d", "s\de\d", "s0\de\d")
+matchlist = ("s\dx\d", "s0\dx\d", "\de\d", "s\de\d", "s0\de\d", "\dx\d")
 DEBUG = False
+INTERACT = False
 
 
 # Mount remote folder
@@ -128,24 +129,26 @@ def listSrcFolder(src_path):
 
 
 # Handle TvSeries
-def handleTvSeries(file_list):
+def returnDstFullPath(f_name):
 
-    for f_name in file_list:
-        title = ''
-        season = None
-        split_name = f_name.split('.')
-        for str_name in split_name:
-            for match in matchlist:
-                regex = re.compile(match, re.IGNORECASE)
-                if regex.match(str_name):
-                    season = str_name
-                    break
-                else:
-                    title += str_name + " "
-                    break
-            if season is not None:
+    title = ''
+    season = None
+    split_name = f_name.split('.')
+    for str_name in split_name:
+        match_found = False
+        for match in matchlist:
+            regex = re.compile(match, re.IGNORECASE)
+            if regex.match(str_name):
+                match_found = True
                 break
-        print(title + " " + season)
+        if match_found is False:
+            title += str_name + " "
+        else:
+            season = str_name
+            break
+
+    full_path = os.path.join(dstTvSerieFolder, title[:-1], season)
+    return full_path
 ###
 
 
@@ -154,19 +157,24 @@ def main():
 
     parser = argparse.ArgumentParser(prog="syncMedia",
                                      description="Sync media in folder.")
-
     parser.add_argument('-d', '--debug',
                         action='store_true',
                         help="set debug ON.")
-
+    parser.add_argument('-I', 'interactive',
+                        action='store_true',
+                        help="eanable interactive mode.")
     parser.add_argument('--version', action='version', version='%(prog)s 2.0')
-
     args = parser.parse_args()
 
     # Set debug ON
     if args.debug:
         global DEBUG
         DEBUG = True
+
+    # Set interactive mode ON
+    if args.interactive:
+        global INTERACT
+        INTERACT = True
 
     if DEBUG:
         print("[*] Program starting...")
@@ -179,7 +187,9 @@ def main():
 
     # Listing source folder
     file_list = listSrcFolder(srcMediaFolder)
-    handleTvSeries(file_list)
+    for f_name in file_list:
+        dstPath = returnDstFullPath(f_name)
+        print(dstPath)
 
     umountRemoteFolder()
 ###########
