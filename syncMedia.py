@@ -79,11 +79,11 @@ def handleFilm(src_file, file_name):
     dst_file = os.path.join(dstFilmFolder, file_name)
 
     if os.path.exists(dst_file):
-        now = time.time() - (6 * 86400)
+        now = time.time() - (2 * 86400)
 
         if os.stat(src_file).st_ctime < now:
             if DEBUG:
-                print("Remove file: " + src_file)
+                print("#*] Removing file: " + src_file)
             # os.remove(src_file)
     else:
         try:
@@ -128,7 +128,25 @@ def listSrcFolder(src_path):
 ###
 
 
-# Handle TvSeries
+# Define tv serie season
+def getSeason(str_name):
+
+    sep_list = ('x', 'X', 'e', 'E')
+
+    season = 'Season '
+    num = ''
+
+    for char in str_name:
+        if char.isdigit():
+            num += char
+        if char in sep_list:
+            break
+
+    return season + num
+###
+
+
+# Return th fullpath of destination
 def returnDstFullPath(f_name):
 
     title = ''
@@ -144,7 +162,7 @@ def returnDstFullPath(f_name):
         if match_found is False:
             title += str_name + " "
         else:
-            season = str_name
+            season = getSeason(str_name)
             break
 
     full_path = os.path.join(dstTvSerieFolder, title[:-1], season)
@@ -160,7 +178,7 @@ def main():
     parser.add_argument('-d', '--debug',
                         action='store_true',
                         help="set debug ON.")
-    parser.add_argument('-I', 'interactive',
+    parser.add_argument('-I', '--interactive',
                         action='store_true',
                         help="eanable interactive mode.")
     parser.add_argument('--version', action='version', version='%(prog)s 2.0')
