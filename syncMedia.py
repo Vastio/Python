@@ -79,11 +79,11 @@ def handleFilm(src_file, file_name):
     dst_file = os.path.join(dstFilmFolder, file_name)
 
     if os.path.exists(dst_file):
-        now = time.time() - (2 * 86400)
+        now = time.time() - (6 * 86400)
 
         if os.stat(src_file).st_ctime < now:
             if DEBUG:
-                print("#*] Removing file: " + src_file)
+                print("[*] It's time to remove file: " + src_file)
             # os.remove(src_file)
     else:
         try:
@@ -173,7 +173,7 @@ def returnDstFullPath(f_name):
 # Move Tv serie
 def handleTvSerie(srcPath, dstPath):
 
-    if os.path.exists(dstPath):
+    if not os.path.exists(dstPath):
         try:
             if DEBUG:
                 print(srcPath + " -> " + dstPath)
