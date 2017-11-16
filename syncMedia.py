@@ -113,11 +113,11 @@ def listSrcFolder(src_path):
                 if os.path.splitext(full_path)[1] in fileExt:
                     if isTvSerie(f_name):
                         if DEBUG:
-                            print("[*] TvSerie -> " + f_name)
+                            print("[*] Found TvSerie -> " + f_name)
                         serie_list[f_name] = full_path
                     else:
                         if DEBUG:
-                            print("[*] Film -> " + f_name)
+                            print("[*] Found Film -> " + f_name)
                         handleFilm(full_path, f_name)
             # Recursiva se directory
             if os.path.isdir(full_path):
@@ -165,8 +165,22 @@ def returnDstFullPath(f_name):
             season = getSeason(str_name)
             break
 
-    full_path = os.path.join(dstTvSerieFolder, title[:-1], season)
+    full_path = os.path.join(dstTvSerieFolder, title[:-1], season, f_name)
     return full_path
+###
+
+
+# Move Tv serie
+def handleTvSerie(srcPath, dstPath):
+
+    if os.path.exists(dstPath):
+        try:
+            if DEBUG:
+                print(srcPath + " -> " + dstPath)
+            shutil.copyfile(srcPath, dstPath)
+        except IOError as err:
+            sys.stderr.write(" [!] IOError: %s\n" % err)
+            sys.exit(1)
 ###
 
 
@@ -207,7 +221,7 @@ def main():
     file_list = listSrcFolder(srcMediaFolder)
     for f_name in file_list:
         dstPath = returnDstFullPath(f_name)
-        print(dstPath)
+        handleTvSerie(file_list[f_name], dstPath)
 
     umountRemoteFolder()
 ###########
