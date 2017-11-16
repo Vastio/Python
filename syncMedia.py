@@ -88,7 +88,7 @@ def handleFilm(src_file, file_name):
     else:
         try:
             if DEBUG:
-                print(src_file + " -> " + dst_file)
+                print("[*] " + src_file + " -> " + dst_file)
             shutil.copyfile(src_file, dst_file)
         except IOError as err:
             sys.stderr.write(" [!] IOError: %s\n" % err)
@@ -176,7 +176,7 @@ def handleTvSerie(srcPath, dstPath):
     if not os.path.exists(dstPath):
         try:
             if DEBUG:
-                print(srcPath + " -> " + dstPath)
+                print("[*] " + srcPath + " -> " + dstPath)
             shutil.copyfile(srcPath, dstPath)
         except IOError as err:
             sys.stderr.write(" [!] IOError: %s\n" % err)
