@@ -89,7 +89,7 @@ def handleFilm(src_file, file_name):
     else:
         try:
             if DEBUG:
-                print("[*] " + src_file + " -> " + dst_file)
+                print("[<*>] " + src_file + " -> " + dst_file)
             shutil.copyfile(src_file, dst_file)
         except IOError as err:
             sys.stderr.write(" [!] IOError: %s\n" % err)
@@ -180,7 +180,7 @@ def handleTvSerie(srcPath, dstPath):
         try:
             os.makedirs(parent_dir)
             if DEBUG:
-                print('[*] Created parent dir -> ' + parent_dir)
+                print('[<*>] Created parent dir -> ' + parent_dir)
         except OSError as exc:
             if exc.errno == errno.EEXIST and os.path.isdir(parent_dir):
                 pass
@@ -190,8 +190,8 @@ def handleTvSerie(srcPath, dstPath):
     if not os.path.exists(dstPath):
         try:
             if DEBUG:
-                print("[*] " + srcPath + " -> " + dstPath)
-            # shutil.copyfile(srcPath, dstPath)
+                print("[<*>] " + srcPath + " -> " + dstPath)
+            shutil.copyfile(srcPath, dstPath)
         except IOError as err:
             sys.stderr.write(" [!] IOError: %s\n" % err)
             sys.exit(1)
