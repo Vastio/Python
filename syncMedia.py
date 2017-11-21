@@ -179,6 +179,8 @@ def handleTvSerie(srcPath, dstPath):
     if not os.path.isdir(parent_dir):
         try:
             os.makedirs(parent_dir)
+            if DEBUG:
+                print('[*] Created parent dir -> ' + parent_dir)
         except OSError as exc:
             if exc.errno == errno.EEXIST and os.path.isdir(parent_dir):
                 pass
