@@ -11,6 +11,7 @@
 
 import sys
 import os
+import errno
 import time
 import argparse
 import subprocess
@@ -173,11 +174,22 @@ def returnDstFullPath(f_name):
 # Move Tv serie
 def handleTvSerie(srcPath, dstPath):
 
+    # Crea le directory se non esistono
+    parent_dir = os.path.split(0)
+    if not os.path.isdir(parent_dir):
+        try:
+            os.makedirs(parent_dir)
+        except OSError as exc:
+            if exc.errno == errno.EEXIST and os.path.isdir(parent_dir):
+                pass
+            else:
+                raise
+
     if not os.path.exists(dstPath):
         try:
             if DEBUG:
                 print("[*] " + srcPath + " -> " + dstPath)
-            shutil.copyfile(srcPath, dstPath)
+            # shutil.copyfile(srcPath, dstPath)
         except IOError as err:
             sys.stderr.write(" [!] IOError: %s\n" % err)
             sys.exit(1)
