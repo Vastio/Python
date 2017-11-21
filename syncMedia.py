@@ -175,7 +175,7 @@ def returnDstFullPath(f_name):
 def handleTvSerie(srcPath, dstPath):
 
     # Crea le directory se non esistono
-    parent_dir = os.path.split(0)
+    parent_dir = os.path.split(dstPath)[0]
     if not os.path.isdir(parent_dir):
         try:
             os.makedirs(parent_dir)
