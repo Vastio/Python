@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 import sys
 import time
 import json
@@ -28,7 +27,7 @@ def getExtractNumbers(url):
     # Get page from url
     try:
         resp = urllib2.urlopen(url)
-    except urllib2.URLErrro, err:
+    except urllib2.URLErrro as err:
         sys.stderr.write("URLError " + str(err.reason) + "\n")
         sys.exit(1)
 
@@ -56,13 +55,45 @@ def getExtractNumbers(url):
 ###
 
 
+# Compare numbers
+def compareNumbers(extractNums, playedNums):
+
+    numbers = []
+
+    for num in playedNums:
+        if num in extractNums:
+            numbers.append(num)
+
+    # Numero oro
+    if extractNums[-1] in playedNums:
+        goldNum = extractNums[-1]
+    else:
+        goldNum = 0
+
+    return (numbers, goldNum)
+###
+
+
 # MAIN
 def main():
 
     json = loadJson()
 
     extractNums = getExtractNumbers(json['url'])
-    print(extractNums)
+    playedNums = json['numbers']
+
+    if extractNums is not None:
+        (numbers, goldNum) = compareNumbers(extractNums, playedNums)
+
+        # Costruzione del messaggio
+        message = "\nNumeri estratti: " + str(extractNums) + "\n"
+        message += "Numeri giocati: " + str(playedNums) + "\n"
+        message += "=======================================\n"
+        message += "<*> Numeri individuati: " + str(numbers) + "\n"
+        message += "<*> Numero oro: " + str(goldNum) + "\n"
+        message += "=======================================\n"
+
+        print(message)
 ###
 
 
