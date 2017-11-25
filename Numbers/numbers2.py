@@ -75,6 +75,16 @@ def compareNumbers(extractNums, playedNums):
 ###
 
 
+# send message to junabot
+def sendMessage(bot_token, usr_id, message):
+    try:
+        bot = telepot.Bot(bot_token)
+        bot.sendMessage(usr_id, message)
+    except telepot.exception.TelegramError as ex:
+        print("Error: " + ex[0])
+###
+
+
 # MAIN
 def main():
 
