@@ -40,7 +40,7 @@ def getExtractNumbers(url):
     date = soup.find('input', {'id': 'datepicker'}).get('value')
     todate = time.strftime("%d/%m/%Y")
 
-    if date == todate:
+    if date != todate:
         return None
     else:
         # Estrae i 20 numeri
