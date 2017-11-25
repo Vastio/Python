@@ -1,7 +1,7 @@
 {
     "bot_token": "",
     "seba_id":  "",
-    "url": "http://www.lottomaticaitalia.it/10elotto/estrazioni-e-vincite/10-e-lotto-estrazioni-legate-Lotto.html",
+    "url": "http://mobile.giocodellotto.com/10elotto/estrazioni-e-vincite/10-e-lotto-estrazioni-legate-Lotto.html",
     "numbers": [5, 13, 24, 28, 36, 44, 52, 56, 67, 74],
     "database":	"./nums.sqlite"
 }
