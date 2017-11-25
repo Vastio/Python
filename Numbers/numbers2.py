@@ -6,6 +6,7 @@ import time
 import json
 import urllib2
 from bs4 import BeautifulSoup
+import telepot
 
 
 configFile = "./config.json"
@@ -93,7 +94,7 @@ def main():
         message += "<*> Numero oro: " + str(goldNum) + "\n"
         message += "=======================================\n"
 
-        print(message)
+        sendMessage(json['bot_token'], json['seba_id'], message)
 ###
 
 
