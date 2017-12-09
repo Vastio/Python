@@ -233,6 +233,10 @@ def main():
         else:
             print("[!] Source path not exists.")
             sys.exit(1)
+    else:
+        # Monta la cartella remota se on specificato il sorgente
+        if not mountRemoteFolder():
+            sys.exit(1)
 
     # Setting destination of Tv TvSeries
     if args.dest:
@@ -244,12 +248,6 @@ def main():
 
     if DEBUG:
         print("[*] Program starting...")
-
-    if not mountRemoteFolder():
-        sys.exit(1)
-
-    if DEBUG:
-        print("[*] Mounted smb source folder.")
 
     # Listing source folder
     file_list = listSrcFolder(srcMediaFolder)
