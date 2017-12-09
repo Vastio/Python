@@ -148,7 +148,7 @@ def getSeason(str_name):
 
 
 # Return th fullpath of destination
-def returnDstFullPath(f_name):
+def returnDstFullPath(f_name, dest):
 
     title = ''
     season = None
@@ -166,7 +166,7 @@ def returnDstFullPath(f_name):
             season = getSeason(str_name)
             break
 
-    full_path = os.path.join(dstTvSerieFolder, title[:-1], season, f_name)
+    full_path = os.path.join(dest, title[:-1], season, f_name)
     return full_path
 ###
 
@@ -206,9 +206,13 @@ def main():
     parser.add_argument('-d', '--debug',
                         action='store_true',
                         help="set debug ON.")
+    parser.add_argument('-D', '--dest',
+                        help="set destination folder of Tv Serie.")
     parser.add_argument('-I', '--interactive',
                         action='store_true',
                         help="eanable interactive mode.")
+    parser.add_argument('-S', '--source',
+                        help="set source media folder of Tv Serie.")
     parser.add_argument('--version', action='version', version='%(prog)s 2.0')
     args = parser.parse_args()
 
@@ -222,6 +226,22 @@ def main():
         global INTERACT
         INTERACT = True
 
+    # Setting source
+    if args.source:
+        if os.path.isdir(args.source):
+            srcMediaFolder = args.source
+        else:
+            print("[!] Source path not exists.")
+            sys.exit(1)
+
+    # Setting destination of Tv TvSeries
+    if args.dest:
+        if os.path.isdir(args.source):
+            dstTvSerieFolder = args.dest
+        else:
+            print("[!] Source path not exists.")
+            sys.exit(1)
+
     if DEBUG:
         print("[*] Program starting...")
 
@@ -234,7 +254,7 @@ def main():
     # Listing source folder
     file_list = listSrcFolder(srcMediaFolder)
     for f_name in file_list:
-        dstPath = returnDstFullPath(f_name)
+        dstPath = returnDstFullPath(f_name, dstTvSerieFolder)
         handleTvSerie(file_list[f_name], dstPath)
 
     umountRemoteFolder()
