@@ -21,7 +21,7 @@ import shutil
 #########
 # VARS  #
 #########
-srcMediaFolder = "/mnt/share"
+srcSmbFolder = "/mnt/share"
 dstFilmFolder = "/mnt/media/video/Films/"
 dstTvSerieFolder = "/mnt/media/video/TvSeries"
 fileExt = (".avi", ".mkv", ".mp4")
@@ -36,7 +36,7 @@ def mountRemoteFolder():
     opts = "username=p2p,password=Claeseby@1997,vers=3.0"
 
     try:
-        subprocess.check_call(['mount.cifs', smb, srcMediaFolder, '-o', opts])
+        subprocess.check_call(['mount.cifs', smb, srcSmbFolder, '-o', opts])
     except subprocess.CalledProcessError as err:
         sys.stderr.write(" [!] Unable  to mount remote folder: %s!\n" % err)
         return 0
@@ -51,7 +51,7 @@ def mountRemoteFolder():
 # Umount rmeote folder
 def umountRemoteFolder():
     try:
-        subprocess.check_call(['umount', srcMediaFolder])
+        subprocess.check_call(['umount', srcSmbFolder])
     except subprocess.CalledProcessError as err:
         sys.stderr.write(" [!] Unable  to mount remote folder: %s!\n" % err)
         return 0
@@ -235,6 +235,7 @@ def main():
             sys.exit(1)
     else:
         # Monta la cartella remota se on specificato il sorgente
+        srcMediaFolder = srcSmbFolder
         if not mountRemoteFolder():
             sys.exit(1)
 
