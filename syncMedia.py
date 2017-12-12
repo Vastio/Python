@@ -242,10 +242,12 @@ def main():
     # Setting destination of Tv TvSeries
     if args.dest:
         if os.path.isdir(args.source):
-            dstTvSerieFolder = args.dest
+            dstSerieFolder = args.dest
         else:
             print("[!] Source path not exists.")
             sys.exit(1)
+    else:
+        dstSerieFolder = dstTvSerieFolder
 
     if DEBUG:
         print("[*] Program starting...")
@@ -253,7 +255,7 @@ def main():
     # Listing source folder
     file_list = listSrcFolder(srcMediaFolder)
     for f_name in file_list:
-        dstPath = returnDstFullPath(f_name, dstTvSerieFolder)
+        dstPath = returnDstFullPath(f_name, dstSerieFolder)
         handleTvSerie(file_list[f_name], dstPath)
 
     umountRemoteFolder()
