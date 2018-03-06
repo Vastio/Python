@@ -167,6 +167,7 @@ def returnDstFullPath(f_name, dest):
             break
 
     full_path = os.path.join(dest, title[:-1], season, f_name)
+
     return full_path
 ###
 
@@ -210,7 +211,10 @@ def main():
                         help="set destination folder of Tv Serie.")
     parser.add_argument('-I', '--interactive',
                         action='store_true',
-                        help="eanable interactive mode.")
+                        help="enable interactive mode.")
+    parser.add_argument('-m', '--mount',
+                        action='store_true',
+                        help="mount source folder.")
     parser.add_argument('-S', '--source',
                         help="set source media folder of Tv Serie.")
     parser.add_argument('--version', action='version', version='%(prog)s 2.0')
@@ -220,6 +224,10 @@ def main():
     if args.debug:
         global DEBUG
         DEBUG = True
+
+    if args.mount:
+        mountRemoteFolder()
+        sys.exit(0)
 
     # Set interactive mode ON
     if args.interactive:
